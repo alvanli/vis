@@ -2,13 +2,13 @@ import React from "react";
 import { Box, Modal, Typography, IconButton } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 
-const DescModal = ({ modalOpen, handleClose, currDatum, titleKey, descKey, linkKey }) => {
-    let desc = Object.keys(currDatum).length > 0 && descKey in currDatum ? currDatum[descKey] : '';
+const DescModal = ({ modalOpen, handleClose, currDatum }) => {
+    let desc = Object.keys(currDatum).length > 0 && "brief_desc" in currDatum ? currDatum["brief_desc"] : '';
     if (desc.length > 1000) {
         desc = `${desc.slice(0, 1000)}...`;
     }
 
-    let title = Object.keys(currDatum).length > 0 && titleKey in currDatum && titleKey !== descKey ? currDatum[titleKey] : '';
+    let title = Object.keys(currDatum).length > 0 && "title_project" in currDatum ? currDatum["title_project"] : '';
     if (title.length > 100) {
         title = `${title.slice(0, 100)}...`;
     }
@@ -49,7 +49,7 @@ const DescModal = ({ modalOpen, handleClose, currDatum, titleKey, descKey, linkK
                 >
                     {desc}
                 </Typography>
-                <IconButton href={currDatum[linkKey]}>
+                <IconButton href={currDatum['project_link']}>
                     <LinkIcon />
                 </IconButton>
             </Box>

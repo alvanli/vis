@@ -1,5 +1,6 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use csv::ReaderBuilder;
+use actix_cors::Cors;
 use std::fs::File;
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
@@ -36,7 +37,7 @@ async fn get_points(data: web::Data<AppState>, query: web::Query<QueryParams>) -
             point.x >= query.min_x && point.x <= query.max_x && point.y >= query.min_y && point.y <= query.max_y
         })
         .collect();
-
+    println!("x: [{},{}] y: [{},{}] len: {}", query.min_x, query.max_x, query.min_y, query.max_y, filtered_points.len());
     HttpResponse::Ok().json(filtered_points)
 }
 
@@ -55,7 +56,14 @@ async fn main() -> std::io::Result<()> {
     });
 
     HttpServer::new(move || {
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:3000")
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec!["Content-Type"])
+            .max_age(3600);
+
         App::new()
+            .wrap(cors)
             .app_data(app_state.clone())
             .route("/get_points/", web::get().to(get_points))
     })
